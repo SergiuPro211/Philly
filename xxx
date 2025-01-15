@@ -16,7 +16,7 @@ local OrionLib = {
 		Default = {
 			Main = Color3.fromRGB(15, 15, 15),
 			Second = Color3.fromRGB(25, 25, 25),
-			Stroke = Color3.fromRGB(255, 0, 255),
+			Stroke = Color3.fromRGB(25, 25, 25),
 			Divider = Color3.fromRGB(255, 0, 255),
 			Text = Color3.fromRGB(255, 0, 255),
 			TextDark = Color3.fromRGB(200, 100, 200)
@@ -915,7 +915,7 @@ function OrionLib:MakeWindow(WindowConfig)
 				ToggleConfig.Name = ToggleConfig.Name or "Toggle"
 				ToggleConfig.Default = ToggleConfig.Default or false
 				ToggleConfig.Callback = ToggleConfig.Callback or function() end
-				ToggleConfig.Color = Color3.fromRGB(25, 25, 25)
+				ToggleConfig.Color = ToggleConfig.Color or Color3.fromRGB(255, 0, 255)
 				ToggleConfig.Flag = ToggleConfig.Flag or nil
 				ToggleConfig.Save = ToggleConfig.Save or false
 
