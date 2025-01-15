@@ -6,7 +6,7 @@ local RunService = game:GetService("RunService")
 local LocalPlayer = game:GetService("Players").LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 local HttpService = game:GetService("HttpService")
-print("niggablack")
+print("niggaxxblack")
 local OrionLib = {
 	Elements = {},
 	ThemeObjects = {},
@@ -1139,13 +1139,13 @@ function OrionLib:MakeWindow(WindowConfig)
 							Position = UDim2.new(1, -30, 0.5, 0),
 							ImageColor3 = Color3.fromRGB(255, 0, 255),
 							Name = "Ico"
-						}), "TextDark"),
+						}), "OtherText"),
 						AddThemeObject(SetProps(MakeElement("Label", "Selected", 13), {
 							Size = UDim2.new(1, -40, 1, 0),
 							Font = Enum.Font.Gotham,
 							Name = "Selected",
 							TextXAlignment = Enum.TextXAlignment.Right
-						}), "TextDark"),
+						}), "OtherText"),
 						AddThemeObject(SetProps(MakeElement("Frame"), {
 							Size = UDim2.new(1, 0, 0, 1),
 							Position = UDim2.new(0, 0, 1, -1),
@@ -1174,7 +1174,7 @@ function OrionLib:MakeWindow(WindowConfig)
 								Position = UDim2.new(0, 8, 0, 0),
 								Size = UDim2.new(1, -8, 1, 0),
 								Name = "Title"
-							}), "OtherText")
+							}), "Text")
 						}), {
 							Parent = DropdownContainer,
 							Size = UDim2.new(1, 0, 0, 28),
