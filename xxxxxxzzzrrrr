@@ -6,7 +6,7 @@ local RunService = game:GetService("RunService")
 local LocalPlayer = game:GetService("Players").LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 local HttpService = game:GetService("HttpService")
-print("xz123xrrx5554444x")
+print("nigga")
 local OrionLib = {
 	Elements = {},
 	ThemeObjects = {},
@@ -19,7 +19,7 @@ local OrionLib = {
 			Stroke = Color3.fromRGB(255, 0, 255),
 			Divider = Color3.fromRGB(30, 30, 30),
 			Text = Color3.fromRGB(255, 0, 255),
-			TextDark = Color3.fromRGB(200, 100, 200)
+			TextDark = Color3.fromRGB(150, 150, 150)
 		}
 	},
 	SelectedTheme = "Default",
