@@ -23,7 +23,7 @@ local PresetColor, Drawing, placeid = Color3.fromRGB(255, 0, 0), Drawing or {}, 
 local CloseBind, syn, getgenv = Enum.KeyCode.X, syn or {}, getgenv or {}
 local UIShield = protectgui or (syn and syn.protect_gui) or (function() end)
 local rbxgui = cg:FindFirstChild("RobloxGui") or Instance.new("ScreenGui", cg)
-local paths = {cg:FindFirstChild("TopBarApp"), cg:FindFirstChild("AdsEuDsaPromptHandler")}
+local paths = {cg:FindFirstChild("AdsEuDsaPromptHandler")}
 local currentPathIndex = 1
 local altloaded = false
 
