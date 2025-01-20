@@ -27,12 +27,15 @@ local altloaded = false
 if altloaded then
     for _, path in ipairs(paths) do
         if path then
+            print("Checking path:", path.Name)
             for i, v in next, path:GetChildren() do
                 if v.Name == "-.-- .- .-.. .-.. / .- .-. . / ... -.- .. -.. ..." then
                     task.wait(0.25)
                     v:Destroy()
                 end
             end
+        else
+            warn("Path is nil!")
         end
     end
     for i, v in next, library.Conn do
