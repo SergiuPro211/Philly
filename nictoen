@@ -4,7 +4,7 @@ local library = {
     SafeCall = false,
     Conn = {},
     animatetext = false,
-    debug = false, 
+    debug = true, 
     OCbtn = false
 }
 local fs = false
@@ -168,6 +168,7 @@ local screengui = (function()
         if not validateInstance(sg, "ScreenGui") then return nil end
         sg.Name = generateUID(math.random(20,30))
         sg.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+        sg.Parent = cg
         table.insert(Protected.Instances, sg)
         return sg
     end)
