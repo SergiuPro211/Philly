@@ -166,11 +166,9 @@ local screengui = (function()
     local success, gui = pcall(function()
         local sg = Instance.new("ScreenGui")
         if not validateInstance(sg, "ScreenGui") then return nil end
-        sg.Name = generateUID(math.random(20,30))
+        sg.Name = GuiName
         sg.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-        sg.Parent = game.Workspace.CurrentCamera
-        task.wait(7)
-        sg.Parent = cg:FindFirstChild("AdsEuDsaPromptHandler")
+        sg.Parent = cg
         table.insert(Protected.Instances, sg)
         return sg
     end)
@@ -1648,7 +1646,7 @@ function library:Window(title, version, info, preset, closebind)
             BindText.TextXAlignment = Enum.TextXAlignment.Right
 
             Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
-
+		warn("mogger")
             Protected.Connections[#Protected.Connections + 1] = Bind.MouseButton1Click:Connect(function()
                 BindText.Text = "..."
                 binding = true
