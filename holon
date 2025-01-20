@@ -7,6 +7,7 @@ local library = {
     debug = false, 
     OCbtn = false
 }
+local fs = false
 local Protected = {
     Connections = {},
     Instances = {},
@@ -32,7 +33,11 @@ function validateInstance(instance, className)
 end
 function protectedCall(callback, ...)
     if not callback then return end
-    local success, result = pcall(callback, ...)
+    local success, result = pcall(function()
+        if type(callback) == "function" then
+            callback(...)
+        end
+    end)
     if not success and library.debug then
         warn("Callback Error:", result)
     end
@@ -178,7 +183,7 @@ function library:Unload()
         screengui:Destroy() 
     end
     self:Cleanup()
-    loaded = false 
+    setState("loaded", false)
 end
 
 function MakeDraggable(topbarobject, object)
@@ -582,7 +587,7 @@ function library:Window(title, version, info, preset, closebind)
         TabBtn.Parent = TabHold
         TabBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
         TabBtn.BackgroundTransparency = 1.000
-        TabBtn.Size = UDim2.new(0, 107, 0, 21)s
+        TabBtn.Size = UDim2.new(0, 107, 0, 21)
         TabBtn.Font = Enum.Font.SourceSans
         TabBtn.Text = ""
         TabBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
