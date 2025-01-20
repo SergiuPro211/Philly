@@ -176,51 +176,42 @@ local screengui = (function()
     end)
     return success and gui or nil
 end)()
-
 task.spawn(function()
     while getState("loaded") do
-        library.RainbowColorValue = library.RainbowColorValue + (1/255)
-        library.HueSelectionPosition = library.HueSelectionPosition + 1
-
-        if library.RainbowColorValue >= 1 then
-            library.RainbowColorValue = 0
-        end
-
-        if library.HueSelectionPosition == 80 then
-            library.HueSelectionPosition = 0
-        end
-        rs:Wait()
-    end
+		library.RainbowColorValue = library.RainbowColorValue + 1 / 255
+		library.HueSelectionPosition = library.HueSelectionPosition + 1
+		if library.RainbowColorValue >= 1 then
+			library.RainbowColorValue = 0
+		end
+		if library.HueSelectionPosition == 80 then
+			library.HueSelectionPosition = 0
+		end
+		task.wait()
+	end
 end)
 function animateText(display, text, repeatCount, delay)
     if not display then return end
-    local rs = game:GetService("RunService")
     local animatedRandom = "1234567890"
-    local lastUpdate = tick()
-    task.spawn(function()
-        for i = 1, #text do
-            local revealChar = text:sub(i, i)
-            local displayText = text:sub(1, i - 1)
-            for _ = 1, math.random(2, 4) do
-                if not getState("loaded") then return end
-                local random = math.random(1, #animatedRandom) 
-                local randomChar = animatedRandom:sub(random, random)
-                if (tick() - lastUpdate) >= (delay + math.random() * 0.1) then
-                    pcall(function()
-                        display.Text = displayText .. randomChar
-                    end)
-                    lastUpdate = tick()
-                end
-                rs.Heartbeat:Wait()
-                if library.animatetext then break end
+    for i = 1, #text do
+        local revealChar = text:sub(i, i)
+        local displayText = text:sub(1, i - 1)
+
+        for _ = 1, math.random(1, 6) do
+            local random = math.random(1, #animatedRandom)
+            local randomChar = animatedRandom:sub(random, random)
+            display.Text = displayText .. randomChar
+            task.wait(delay)
+            if library.animatetext then
+                break
             end
-            pcall(function() 
-                display.Text = displayText .. revealChar
-            end)
-            if library.animatetext then break end
-            rs.Heartbeat:Wait()
         end
-    end)
+        display.Text = displayText .. revealChar
+        task.wait(delay)
+        if library.animatetext then
+            break
+        end
+    end
+    task.wait(5)
 end
 function library:Unload()
     if screengui then
