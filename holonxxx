@@ -263,29 +263,6 @@ function library:Window(title, version, info, preset, closebind)
     if not getState("initialized") then
         if not init() then return end
     end
-    local success, newGui = pcall(function()
-        local gui = Instance.new("ScreenGui")
-        if syn then
-            syn.protect_gui(gui)
-            gui.Parent = game.CoreGui
-        elseif gethui then
-            gui.Parent = gethui()
-        else
-            gui.Parent = game.CoreGui  
-        end
-        gui.Name = generateUID(20)
-        gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-        gui.ResetOnSpawn = false
-        return gui
-    end)
-    if not success or not validateInstance(newGui, "ScreenGui") then
-        warn("Failed to create ScreenGui")
-        return
-    end
-
-    screengui = newGui
-    table.insert(Protected.Instances, screengui)
-    local Main = Instance.new("Frame")
     local Main = Instance.new("Frame")
     if not validateInstance(Main, "Frame") then return end
     local TabHold = Instance.new("Frame")
