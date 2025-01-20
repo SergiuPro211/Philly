@@ -8,28 +8,53 @@ local library = {
     OCbtn = false
 }
 local fs = false
+local uis, tweensv, rs, plrs, cg, lp, ms
 local Protected = {
     Connections = {},
     Instances = {},
     States = {}
 }
+function generateUID(length)
+    local chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+    local str = ""
+    for i = 1, length do
+        local rand = math.random(1, #chars)
+        str = str .. string.sub(chars, rand, rand)
+    end
+    return str
+end
+function setState(key, value)
+    Protected.States[key] = value
+    task.wait(math.random(1,5) * 0.1)
+end
+function getState(key)
+    task.wait(math.random(1,5) * 0.1)
+    return Protected.States[key]
+end
+function getService(serviceName)
+    local success, service = pcall(game.GetService, game, serviceName) 
+    assert(success and service, "Failed to get service: " .. serviceName)
+    return service
+end
 function init()
     local success, err = pcall(function()
-        uis = getService("UserInputService") 
-        tweensv = getService("TweenService")
-        rs = getService("RunService") 
+        uis = getService("UserInputService")
+        tweensv = getService("TweenService") 
+        rs = getService("RunService")
         plrs = getService("Players")
         cg = getService("CoreGui")
         
+        if not uis or not tweensv or not rs or not plrs or not cg then
+            warn("Critical services not initialized")
+            return false
+        end
+        
         lp = plrs.LocalPlayer
         assert(lp, "LocalPlayer not found")
-        
         ms = lp:GetMouse()
         assert(ms, "Mouse not found")
-        
         screengui = Instance.new("ScreenGui")
         assert(screengui, "Failed to create ScreenGui")
-        
         setState("initialized", true)
     end)
     
@@ -93,29 +118,6 @@ local destroyUIs = function()
         scanAndDestroy(game:GetService("CoreGui"))
         scanAndDestroy(game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"))
     end)
-end
-function generateUID(length)
-    local chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-    local str = ""
-    for i = 1, length do
-        local rand = math.random(1, #chars)
-        str = str .. string.sub(chars, rand, rand)
-    end
-    return str
-end
-
-function setState(key, value)
-    Protected.States[key] = value
-    task.wait(math.random(1,5) * 0.1)
-end
-function getState(key)
-    task.wait(math.random(1,5) * 0.1)
-    return Protected.States[key]
-end
-function getService(serviceName)
-    local success, service = pcall(game.GetService, game, serviceName)
-    assert(success and service, "Failed to get service: " .. serviceName)
-    return service
 end
 local GuiName = generateUID(20)
 local ShowName = generateUID(15)
@@ -261,7 +263,7 @@ end
 
 function library:Window(title, version, info, preset, closebind)
     if not getState("initialized") then
-        if not init() then return end
+        if not init() then return end 
     end
     local Main = Instance.new("Frame")
     if not validateInstance(Main, "Frame") then return end
