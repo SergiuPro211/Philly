@@ -168,8 +168,6 @@ local screengui = (function()
         if not validateInstance(sg, "ScreenGui") then return nil end
         sg.Name = generateUID(math.random(20,30))
         sg.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-        sg.ResetOnSpawn = false
-        sg.DisplayOrder = math.random(1000, 9999)
         table.insert(Protected.Instances, sg)
         return sg
     end)
@@ -481,8 +479,6 @@ function library:Window(title, version, info, preset, closebind)
             local ScreenGui = Instance.new("ScreenGui", cg)
             if not validateInstance(ScreenGui, "ScreenGui") then return end
             ScreenGui.Name = altname
-            ScreenGui.ResetOnSpawn = false
-            ScreenGui.DisplayOrder = math.random(1000, 9999)
             local QuickCapture = Instance.new("TextButton", ScreenGui)
             if not validateInstance(QuickCapture, "TextButton") then return end
 			QuickCapture.Name = "UI"
