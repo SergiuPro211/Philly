@@ -7,6 +7,7 @@ local library = {
     debug = false, 
     OCbtn = false
 }
+warn("bitchy")
 local fs = false
 local uis, tweensv, rs, plrs, cg, lp, ms
 local Protected = {
@@ -1646,7 +1647,7 @@ function library:Window(title, version, info, preset, closebind)
             BindText.TextXAlignment = Enum.TextXAlignment.Right
 
             Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
-		warn("mogger")
+
             Protected.Connections[#Protected.Connections + 1] = Bind.MouseButton1Click:Connect(function()
                 BindText.Text = "..."
                 binding = true
