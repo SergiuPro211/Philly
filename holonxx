@@ -13,6 +13,32 @@ local Protected = {
     Instances = {},
     States = {}
 }
+function init()
+    local success, err = pcall(function()
+        uis = getService("UserInputService") 
+        tweensv = getService("TweenService")
+        rs = getService("RunService") 
+        plrs = getService("Players")
+        cg = getService("CoreGui")
+        
+        lp = plrs.LocalPlayer
+        assert(lp, "LocalPlayer not found")
+        
+        ms = lp:GetMouse()
+        assert(ms, "Mouse not found")
+        
+        screengui = Instance.new("ScreenGui")
+        assert(screengui, "Failed to create ScreenGui")
+        
+        setState("initialized", true)
+    end)
+    
+    if not success then
+        warn("Initialization failed:", err)
+        return false 
+    end
+    return true
+end
 function library:Cleanup()
     for _, connection in next, Protected.Connections do
         if typeof(connection) == "RBXScriptConnection" then
@@ -54,10 +80,9 @@ local Services = setmetatable({}, {
     end
 })
 local destroyUIs = function()
-    local function scanAndDestroy(parent)
+    function scanAndDestroy(parent)
         for _, child in ipairs(parent:GetChildren()) do
             if child:IsA("ScreenGui") then
-                -- Random delay to avoid patterns
                 task.wait(math.random(1, 5) * 0.1)
                 child:Destroy() 
             end
@@ -87,17 +112,16 @@ function getState(key)
     task.wait(math.random(1,5) * 0.1)
     return Protected.States[key]
 end
+function getService(serviceName)
+    local success, service = pcall(game.GetService, game, serviceName)
+    assert(success and service, "Failed to get service: " .. serviceName)
+    return service
+end
 local GuiName = generateUID(20)
 local ShowName = generateUID(15)
-local uis = Services.UserInputService
-local tweensv = Services.TweenService 
-local rs = Services.RunService
-local plrs = Services.Players
-local cg = Services.CoreGui
-local lp = plrs.LocalPlayer
-local ms = lp:GetMouse()
 local PresetColor, Drawing, placeid = Color3.fromRGB(255, 0, 0), Drawing or {}, game.PlaceId
 local CloseBind, getgenv = Enum.KeyCode.X, getgenv or {}
+
 local existingGui = cg:FindFirstChild(GuiName)
 if existingGui then
     existingGui:Destroy()
@@ -236,7 +260,32 @@ function library:ChangeBind(key)
 end
 
 function library:Window(title, version, info, preset, closebind)
-    if not validateInstance(screengui, "ScreenGui") then return end
+    if not getState("initialized") then
+        if not init() then return end
+    end
+    local success, newGui = pcall(function()
+        local gui = Instance.new("ScreenGui")
+        if syn then
+            syn.protect_gui(gui)
+            gui.Parent = game.CoreGui
+        elseif gethui then
+            gui.Parent = gethui()
+        else
+            gui.Parent = game.CoreGui  
+        end
+        gui.Name = generateUID(20)
+        gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+        gui.ResetOnSpawn = false
+        return gui
+    end)
+    if not success or not validateInstance(newGui, "ScreenGui") then
+        warn("Failed to create ScreenGui")
+        return
+    end
+
+    screengui = newGui
+    table.insert(Protected.Instances, screengui)
+    local Main = Instance.new("Frame")
     local Main = Instance.new("Frame")
     if not validateInstance(Main, "Frame") then return end
     local TabHold = Instance.new("Frame")
