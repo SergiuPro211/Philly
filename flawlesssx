@@ -84,12 +84,13 @@ function validateInstance(instance, className)
 end
 function protectedCall(callback, ...)
     if not callback then return end
+    local args = {...}
     local success, result = pcall(function()
         if type(callback) == "function" then
-            callback(...)
+            return callback(unpack(args))
         end
     end)
-    if not success and library.debug then
+    if not success and library and library.debug then
         warn("Callback Error:", result)
     end
     return success, result
@@ -119,13 +120,25 @@ local destroyUIs = function()
         scanAndDestroy(game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"))
     end)
 end
+if not init() then 
+    warn("Failed to initialize")
+    return 
+end
+if not cg or not validateInstance(cg, "CoreGui") then
+    warn("CoreGui service not initialized")
+    return
+end
 local GuiName = generateUID(20)
 local ShowName = generateUID(15)
-local PresetColor, Drawing, placeid = Color3.fromRGB(255, 0, 0), Drawing or {}, game.PlaceId
-local CloseBind, getgenv = Enum.KeyCode.X, getgenv or {}
-
-local existingGui = cg:FindFirstChild(GuiName)
-if existingGui then
+local PresetColor = Color3.fromRGB(255, 0, 0)
+local Drawing = Drawing or {}
+local placeid = game.PlaceId
+local CloseBind = Enum.KeyCode.X
+local getgenv = getgenv or {}
+local success, existingGui = pcall(function()
+    return cg:FindFirstChild(GuiName)
+end)
+if success and existingGui and validateInstance(existingGui, "ScreenGui") then
     existingGui:Destroy()
 end
 
