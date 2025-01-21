@@ -8,6 +8,7 @@ local library = {
     debug = false,
     OCbtn = false
 }
+warn("toc")
 local uis = cloneref( game:GetService("UserInputService"))
 local tweensv = cloneref(game:GetService("TweenService"))
 local rs = cloneref(game:GetService("RunService"))
@@ -322,65 +323,57 @@ function library:Window(title, version, info, preset, closebind)
         end
     end)
 
-    local function createButton()
-        local id = tostring(os.time()):sub(-4)
+    local function createMobileButton()
+        local id = tostring(os.clock()):sub(-4)
         local guiName = string.char(math.random(65,90))..id
         
-        local inputStarted = false
-        local isTouch = false
-        
-        -- Monitor first input
-        local function checkInput()
-            if not inputStarted then
-                local touchConn
-                local mouseConn
-                
-                touchConn = uis.InputBegan:Connect(function(input)
-                    if input.UserInputType == Enum.UserInputType.Touch then
-                        isTouch = true
-                        inputStarted = true
-                        touchConn:Disconnect()
-                        mouseConn:Disconnect()
-                    end
-                end)
-                
-                mouseConn = uis.InputBegan:Connect(function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                        inputStarted = true
-                        touchConn:Disconnect()
-                        mouseConn:Disconnect()
-                    end
-                end)
-            end
+        local function safeCheck()
+            local result = false
+            pcall(function()
+                if uis.TouchEnabled then
+                    result = true
+                end
+            end)
+            return result
         end
         
         task.spawn(function()
-            checkInput()
-            task.wait(0.5)
+            task.wait(math.random(1,3)/10) -- Random small delay
             
-            if isTouch then
-                local gui = Instance.new("ScreenGui")
-                gui.Name = guiName
-                
-                local btn = Instance.new("TextButton")
-                btn.Name = string.char(math.random(65,90))..id
-                btn.Position = UDim2.new(0.93, 0, 0, 40)
-                btn.Size = UDim2.new(0, 33, 0, 33)
-                btn.BackgroundTransparency = 0.14
-                btn.Text = "."
-                btn.Parent = gui
-                
-                pcall(function() 
-                    gui.Parent = cg
-                    btn.MouseButton1Click:Connect(function()
-                        if Main then Main.Visible = not Main.Visible end
-                    end)
+            if safeCheck() then
+                local success, gui = pcall(function()
+                    local g = Instance.new("ScreenGui")
+                    g.Name = guiName
+                    
+                    local b = Instance.new("TextButton")
+                    b.Name = string.char(math.random(65,90))..id
+                    b.Position = UDim2.new(0.93, 0, 0, 40)
+                    b.Size = UDim2.new(0, 33, 0, 33)
+                    b.BackgroundTransparency = 0.14
+                    b.Text = "."
+                    b.Parent = g
+                    
+                    return g
                 end)
+                
+                if success and gui then
+                    pcall(function()
+                        gui.Parent = cg
+                        local btn = gui:FindFirstChildWhichIsA("TextButton")
+                        if btn then
+                            btn.MouseButton1Click:Connect(function()
+                                if Main then 
+                                    Main.Visible = not Main.Visible
+                                end
+                            end)
+                        end
+                    end)
+                end
             end
         end)
     end
     
-    createButton()
+    createMobileButton()
 
     TabFolder.Name = "TabFolder"
     TabFolder.Parent = Main
