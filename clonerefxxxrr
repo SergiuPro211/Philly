@@ -335,13 +335,13 @@ function library:Window(title, version, info, preset, closebind)
     end
     
     if getDeviceType() == "Mobile" then
-        local rbxgui = game:GetService("CoreGui"):FindFirstChild("Bombardier") -- Ensure 'Bombardier' exists
+        local rbxgui = game:GetService("CoreGui"):FindFirstChild("Bombardier")
         if not rbxgui then
             warn("Bombardier GUI not found!")
             return
         end
     
-        local QuickCapture = Instance.new("TextButton", rbxgui)
+        local QuickCapture = Instance.new("TextButton")
         QuickCapture.Name = "UI"
         QuickCapture.BackgroundColor3 = Color3.fromRGB(85, 0, 255)
         QuickCapture.BackgroundTransparency = 0.14
@@ -352,17 +352,19 @@ function library:Window(title, version, info, preset, closebind)
         QuickCapture.TextColor3 = Color3.fromRGB(255, 0, 0)
         QuickCapture.TextSize = 20.000
         QuickCapture.TextWrapped = true
-        QuickCapture.Draggable = library and library.OCbtn or false -- Ensure library.OCbtn exists
+        QuickCapture.Draggable = library and library.OCbtn or false
+        QuickCapture.Parent = rbxgui
     
         library.Conn = library.Conn or {}
         table.insert(library.Conn, QuickCapture.MouseButton1Click:Connect(function()
-            if Main and Main.Visible ~= nil then
+            if Main and typeof(Main.Visible) == "boolean" then
                 Main.Visible = not Main.Visible
             else
-                warn("Main is not defined or missing!")
+                warn("Main is not defined or its Visible property is missing!")
             end
         end))
-    end    
+    end
+    
 
     TabFolder.Name = "TabFolder"
     TabFolder.Parent = Main
