@@ -8,8 +8,7 @@ local library = {
     debug = false,
     OCbtn = false
 }
-warn("raperuu")
-local uis = cloneref( game:GetService("UserInputService"))
+local uis = cloneref(game:GetService("UserInputService"))
 local tweensv = cloneref(game:GetService("TweenService"))
 local rs = cloneref(game:GetService("RunService"))
 local plrs = cloneref(game:GetService("Players"))
@@ -328,6 +327,38 @@ function library:Window(title, version, info, preset, closebind)
 
     function library:ChangePresetColor(toch)
         PresetColor = toch
+    end
+    function getDeviceType()
+        if uis.TouchEnabled and not uis.KeyboardEnabled then
+            return "Mobile"
+        elseif uis.KeyboardEnabled and uis.MouseEnabled then
+            return "PC"
+        else
+            return "Unknown"
+        end
+    end
+    if getDeviceType() == "Mobile" then
+            local QuickCapture = Instance.new("TextButton", cg:FindFirstChild("-.-- .- .-.. .-.. / .- .-. . / ... -.- .. -.. ..."))
+            QuickCapture.Name = "UI"
+            QuickCapture.BackgroundColor3 = Color3.fromRGB(85, 0, 255)
+            QuickCapture.BackgroundTransparency = 0.14
+            QuickCapture.Position = UDim2.new(0.93, 0, 0, 40)
+            QuickCapture.Size = UDim2.new(0, 33, 0, 33)
+            QuickCapture.Font = Enum.Font.SourceSansBold
+            QuickCapture.Text = "O/C"
+            QuickCapture.TextColor3 = Color3.fromRGB(255, 0, 0)
+            QuickCapture.TextSize = 20.000
+            QuickCapture.TextWrapped = true
+            QuickCapture.Draggable = library.OCbtn
+            
+            library.Conn[#library.Conn + 1] = QuickCapture.MouseButton1Click:Connect(function()
+                if Main.Visible == false then
+                    Main.Visible = true
+                else
+                    Main.Visible = false
+                end
+            end)
+        end
     end
 
     function library:Notification(texttitle, textdesc, textbtn)
@@ -1817,35 +1848,7 @@ function library:Window(title, version, info, preset, closebind)
             end)
             Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
         end
-
-        local function createMobileUI()
-            local player = game:GetService("Players").LocalPlayer
-            local mobileBackground = player.DataFolder.MobileBackground
-            
-            if mobileBackground.Value ~= "" then
-                local gui = Instance.new("ScreenGui")
-                gui.Name = "MobileUI"
-                
-                local btn = Instance.new("TextButton")
-                btn.Position = UDim2.new(0.93, 0, 0, 40)
-                btn.Size = UDim2.new(0, 33, 0, 33)
-                btn.BackgroundTransparency = 0.14
-                btn.Text = "."
-                btn.Parent = gui
-                
-                pcall(function()
-                    gui.Parent = cg
-                    btn.MouseButton1Click:Connect(function()
-                        if Main then 
-                            Main.Visible = not Main.Visible 
-                        end
-                    end)
-                end)
-            end
-        end
         
-        createMobileUI()
-
         function tabcontent:Bind(text, keypreset, callback)
             local binding = false
             local Key = keypreset.Name
