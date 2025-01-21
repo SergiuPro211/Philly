@@ -8,7 +8,7 @@ local library = {
     debug = false,
     OCbtn = false
 }
-warn("squitonmebae")
+warn("sbbm")
 local uis = cloneref( game:GetService("UserInputService"))
 local tweensv = cloneref(game:GetService("TweenService"))
 local rs = cloneref(game:GetService("RunService"))
@@ -322,6 +322,46 @@ function library:Window(title, version, info, preset, closebind)
             end
         end
     end)
+
+
+local altname = "Show"
+local function checkIfMobile()
+    return uis.TouchEnabled and not uis.MouseEnabled
+end
+
+if cg:FindFirstChild(altname) then
+    cg:FindFirstChild(altname):Destroy()
+end
+
+if checkIfMobile() then
+    if not cg:FindFirstChild(altname) then
+        local ScreenGui = Instance.new("ScreenGui")
+        ScreenGui.Name = altname
+        
+        -- Safety check for mobile restrictions
+        pcall(function()
+            ScreenGui.Parent = cg
+        end)
+        
+        local QuickCapture = Instance.new("TextButton")
+        QuickCapture.Name = "UI"
+        QuickCapture.BackgroundColor3 = Color3.fromRGB(85, 0, 255)
+        QuickCapture.BackgroundTransparency = 0.14
+        QuickCapture.Position = UDim2.new(0.93, 0, 0, 40)
+        QuickCapture.Size = UDim2.new(0, 33, 0, 33)
+        QuickCapture.Font = Enum.Font.SourceSansBold
+        QuickCapture.Text = "O/C"
+        QuickCapture.TextColor3 = Color3.fromRGB(255, 0, 0)
+        QuickCapture.TextSize = 20
+        QuickCapture.TextWrapped = true
+        QuickCapture.Draggable = library.OCbtn
+        QuickCapture.Parent = ScreenGui
+        
+        library.Conn[#library.Conn + 1] = QuickCapture.MouseButton1Click:Connect(function()
+            Main.Visible = not Main.Visible
+        end)
+    end
+end
 
     TabFolder.Name = "TabFolder"
     TabFolder.Parent = Main
