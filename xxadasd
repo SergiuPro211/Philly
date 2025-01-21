@@ -24,7 +24,7 @@ local rbxgui = cg
 local altloaded = false
 if altloaded then
             for i, v in next, cg:GetChildren() do
-                if v.Name == "Bombardier" then
+                if v.Name == "-.-- .- .-.. .-.. / .- .-. . / ... -.- .. -.. ..." then
                     task.wait(0.25)
                     v:Destroy()
                 end
@@ -36,7 +36,7 @@ if altloaded then
 end
 altloaded = true
 local screengui = Instance.new("ScreenGui")
-screengui.Name = "Bombardier"
+screengui.Name = "-.-- .- .-.. .-.. / .- .-. . / ... -.- .. -.. ..."
 screengui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 screengui.Parent = rbxgui
 task.spawn(function()
@@ -321,7 +321,6 @@ function library:Window(title, version, info, preset, closebind)
             end
         end
     end)
-
     function getDeviceType()
         if uis.TouchEnabled and not uis.KeyboardEnabled then
             return "Mobile"
@@ -332,14 +331,14 @@ function library:Window(title, version, info, preset, closebind)
         end
     end
     if getDeviceType() == "PC" then
-        local rbxguix = game:GetService("CoreGui"):FindFirstChild("Bombardier")
+        local rbxguix = game:GetService("CoreGui"):FindFirstChild("-.-- .- .-.. .-.. / .- .-. . / ... -.- .. -.. ...")
         if not rbxguix then
-            warn("Bombardier GUI not found!")
+            warn("Library not found!")
             return
         end
         local QuickCapture = Instance.new("TextButton")
         QuickCapture.Name = "UI"
-        QuickCapture.BackgroundColor3 = Color3.fromRGB(85, 0, 255)
+        QuickCapture.BackgroundColor3 = Color3.fromRGB(1, 1, 1)
         QuickCapture.BackgroundTransparency = 0.14
         QuickCapture.Position = UDim2.new(0.93, 0, 0, 40)
         QuickCapture.Size = UDim2.new(0, 33, 0, 33)
@@ -350,13 +349,17 @@ function library:Window(title, version, info, preset, closebind)
         QuickCapture.TextWrapped = true
         QuickCapture.Draggable = library and library.OCbtn or false
         QuickCapture.Parent = rbxguix
-    
+
         library.Conn = library.Conn or {}
         table.insert(library.Conn, QuickCapture.MouseButton1Click:Connect(function()
             if Main and typeof(Main.Visible) == "boolean" then
                 Main.Visible = not Main.Visible
+                QuickCapture.Text = Main.Visible and "ON" or "OFF"
+                QuickCapture.TextColor3 = Main.Visible and 
+                Color3.fromRGB(0, 255, 0) or
+                Color3.fromRGB(255, 0, 0)
             else
-                warn("Main is not defined or its Visible property is missing!")
+                warn("Library property is missing!")
             end
         end))
     end
