@@ -8,6 +8,7 @@ local library = {
     debug = false,
     OCbtn = false
 }
+warn("squitonmebae")
 local uis = cloneref( game:GetService("UserInputService"))
 local tweensv = cloneref(game:GetService("TweenService"))
 local rs = cloneref(game:GetService("RunService"))
@@ -20,21 +21,15 @@ local cg = game:GetService("CoreGui")
 local httpsv = cloneref(game:GetService("HttpService"))
 local PresetColor, Drawing, placeid = Color3.fromRGB(255, 0, 0), Drawing or {}, game.PlaceId
 local CloseBind, getgenv = Enum.KeyCode.X, getgenv or {}
-local rbxgui = cg:FindFirstChild("RobloxGui") or Instance.new("ScreenGui", cg)
-local paths = {cg:FindFirstChild("AdsEuDsaPromptHandler"), cg, rbxgui}
-local currentPathIndex = 1
+local rbxgui = cg
 local altloaded = false
 if altloaded then
-    for _, path in ipairs(paths) do
-        if path then
-            for i, v in next, path:GetChildren() do
+            for i, v in next, cg:GetChildren() do
                 if v.Name == "-.-- .- .-.. .-.. / .- .-. . / ... -.- .. -.. ..." then
                     task.wait(0.25)
                     v:Destroy()
                 end
             end
-        end
-    end
     for i, v in next, library.Conn do
         v:Disconnect()
     end
@@ -44,14 +39,7 @@ altloaded = true
 local screengui = Instance.new("ScreenGui")
 screengui.Name = "-.-- .- .-.. .-.. / .- .-. . / ... -.- .. -.. ..."
 screengui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-screengui.Parent = paths[currentPathIndex]
-spawn(function()
-    while altloaded do
-        task.wait(0.1)
-        currentPathIndex = currentPathIndex % #paths + 1
-        screengui.Parent = paths[currentPathIndex]
-    end
-end)
+screengui.Parent = rbxgui
 task.spawn(function()
 	while altloaded do
 		library.RainbowColorValue = library.RainbowColorValue + 1 / 255
