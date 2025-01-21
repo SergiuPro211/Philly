@@ -1928,6 +1928,7 @@ function library:Window(title, version, info, preset, closebind)
                     end
                 end
             end)
+        end
         return tabcontent
     end
     return tabhold
