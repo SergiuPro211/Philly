@@ -24,7 +24,7 @@ local rbxgui = cg
 local altloaded = false
 if altloaded then
     for _, v in ipairs(rbxgui:GetChildren()) do
-        if v:IsA("ScreenGui") and v.Name == "-.-- .- .-.. .-.. / .- .-. . / ... -.- .. -.." then
+        if v:IsA("ScreenGui") and v.Name == "-.-- .- .-.. .-.. / .- .-. . / ... -.- .. -.. ..." then
             v:Destroy()
         end
     end
