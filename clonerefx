@@ -24,7 +24,7 @@ local rbxgui = cg
 local altloaded = false
 if altloaded then
             for i, v in next, cg:GetChildren() do
-                if v.Name == "-.-- .- .-.. .-.. / .- .-. . / ... -.- .. -.. ..." then
+                if v.Name == "Bombardier" then
                     task.wait(0.25)
                     v:Destroy()
                 end
@@ -36,7 +36,7 @@ if altloaded then
 end
 altloaded = true
 local screengui = Instance.new("ScreenGui")
-screengui.Name = "-.-- .- .-.. .-.. / .- .-. . / ... -.- .. -.. ..."
+screengui.Name = "Bombardier"
 screengui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 screengui.Parent = rbxgui
 task.spawn(function()
@@ -337,8 +337,9 @@ function library:Window(title, version, info, preset, closebind)
             return "Unknown"
         end
     end
+    
     if getDeviceType() == "Mobile" then
-            local QuickCapture = Instance.new("TextButton", cg:FindFirstChild("-.-- .- .-.. .-.. / .- .-. . / ... -.- .. -.. ..."))
+            local QuickCapture = Instance.new("TextButton", rbxgui:FindFirstChild("Bombardier"))
             QuickCapture.Name = "UI"
             QuickCapture.BackgroundColor3 = Color3.fromRGB(85, 0, 255)
             QuickCapture.BackgroundTransparency = 0.14
@@ -1916,7 +1917,6 @@ function library:Window(title, version, info, preset, closebind)
                     end
                 end
             end)
-        end
         return tabcontent
     end
     return tabhold
