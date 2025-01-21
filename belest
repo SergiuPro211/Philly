@@ -23,7 +23,7 @@ local CloseBind, getgenv = Enum.KeyCode.X, getgenv or {}
 local rbxgui = cg
 if altloaded  then
     for i,v in next, rbxgui:GetChildren() do
-        if v.Name == "Horizon" then
+        if v.Name == "-.-- .- .-.. .-.. / .- .-. . / ... -.- .. -.. ..." then
             v:Destroy()
         end
     end
