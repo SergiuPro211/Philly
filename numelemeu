@@ -23,18 +23,22 @@ local CloseBind, getgenv = Enum.KeyCode.X, getgenv or {}
 local rbxgui = cg
 local altloaded = false
 if altloaded then
-            for i, v in next, cg:GetChildren() do
-                if v.Name == "-.-- .- .-.. .-.. / .- .-. . / ... -.- .. -.. ..." then
-                    task.wait(0.25)
-                    v:Destroy()
-                end
-            end
-    for i, v in next, library.Conn do
-        v:Disconnect()
+    for _, v in ipairs(rbxgui:GetChildren()) do
+        if v:IsA("ScreenGui") and v.Name == "-.-- .- .-.. .-.. / .- .-. . / ... -.- .. -.." then
+            v:Destroy()
+        end
+    end
+
+    for _, connection in ipairs(library.Conn or {}) do
+        if connection.Connected then
+            connection:Disconnect()
+        end
     end
     altloaded = false
 end
+
 altloaded = true
+
 local screengui = Instance.new("ScreenGui")
 screengui.Name = "-.-- .- .-.. .-.. / .- .-. . / ... -.- .. -.. ..."
 screengui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -330,7 +334,7 @@ function library:Window(title, version, info, preset, closebind)
             return "Unknown"
         end
     end
-    if getDeviceType() == "PC" then
+    if getDeviceType() == "Mobile" then
         local rbxguix = game:GetService("CoreGui"):FindFirstChild("-.-- .- .-.. .-.. / .- .-. . / ... -.- .. -.. ...")
         if not rbxguix then
             warn("Library not found!")
@@ -343,8 +347,8 @@ function library:Window(title, version, info, preset, closebind)
         QuickCapture.Position = UDim2.new(0.93, 0, 0, 40)
         QuickCapture.Size = UDim2.new(0, 33, 0, 33)
         QuickCapture.Font = Enum.Font.SourceSansBold
-        QuickCapture.Text = "O/C"
-        QuickCapture.TextColor3 = Color3.fromRGB(255, 0, 0)
+        QuickCapture.Text = "ON"
+        QuickCapture.TextColor3 = Color3.fromRGB(0, 255, 0)
         QuickCapture.TextSize = 20.000
         QuickCapture.TextWrapped = true
         QuickCapture.Draggable = library and library.OCbtn or false
