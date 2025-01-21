@@ -1,5 +1,4 @@
 local cloneref = cloneref or function(x) return x end
-
 local library = {
     RainbowColorValue = 0,
     HueSelectionPosition = 0, 
@@ -9,7 +8,7 @@ local library = {
     debug = false,
     OCbtn = false
 }
-
+warn("squirt")
 local uis = cloneref( game:GetService("UserInputService"))
 local tweensv = cloneref(game:GetService("TweenService"))
 local rs = cloneref(game:GetService("RunService"))
@@ -21,33 +20,41 @@ local cam = ws.CurrentCamera
 local cg = game:GetService("CoreGui")
 local httpsv = cloneref(game:GetService("HttpService"))
 local PresetColor, Drawing, placeid = Color3.fromRGB(255, 0, 0), Drawing or {}, game.PlaceId
-local CloseBind, syn, getgenv = Enum.KeyCode.X, syn or {}, getgenv or {}
-
-local rbxgui = cg
-
-if _G.altloaded  then
-    for i,v in next, rbxgui:GetChildren() do
-        if v.Name == "Horizon" then
-            v:Destroy()
+local CloseBind, getgenv = Enum.KeyCode.X, getgenv or {}
+local rbxgui = cg:FindFirstChild("RobloxGui") or Instance.new("ScreenGui", cg)
+local paths = {cg:FindFirstChild("AdsEuDsaPromptHandler"), cg, rbxgui}
+local currentPathIndex = 1
+local altloaded = false
+if altloaded then
+    for _, path in ipairs(paths) do
+        if path then
+            for i, v in next, path:GetChildren() do
+                if v.Name == "-.-- .- .-.. .-.. / .- .-. . / ... -.- .. -.. ..." then
+                    task.wait(0.25)
+                    v:Destroy()
+                end
+            end
         end
     end
-	for i,v in next, library.Conn do
-		v:Disconnect()
-	end
-	_G.altloaded = false
+    for i, v in next, library.Conn do
+        v:Disconnect()
+    end
+    altloaded = false
 end
-
-_G.altloaded = true
-
-local screengui = Instance.new("ScreenGui", rbxgui)
-screengui.Name = "Horizon"
+altloaded = true
+local screengui = Instance.new("ScreenGui")
+screengui.Name = "-.-- .- .-.. .-.. / .- .-. . / ... -.- .. -.. ..."
 screengui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-if type(syn) == "function" then
-	syn.protect_gui(screengui)
-end
-
+screengui.Parent = paths[currentPathIndex]
+spawn(function()
+    while altloaded do
+        task.wait(0.1)
+        currentPathIndex = currentPathIndex % #paths + 1
+        screengui.Parent = paths[currentPathIndex]
+    end
+end)
 task.spawn(function()
-	while _G.altloaded do
+	while altloaded do
 		library.RainbowColorValue = library.RainbowColorValue + 1 / 255
 		library.HueSelectionPosition = library.HueSelectionPosition + 1
 
@@ -94,10 +101,10 @@ function library:Unload()
     for i,v in next, library.Conn do
 		v:Disconnect()
 	end
-    _G.altloaded = false
+    altloaded = false
 end
 
-local function MakeDraggable(topbarobject, object)
+function MakeDraggable(topbarobject, object)
     local Dragging = nil
     local DragInput = nil
     local DragStart = nil
@@ -283,7 +290,7 @@ function library:Window(title, version, info, preset, closebind)
     }
 
     coroutine.wrap(function()
-        while _G.altloaded do
+        while altloaded do
             local repeatCount = 10
             local delay = 0.05
             for _, v in ipairs(textDisplays) do
@@ -298,7 +305,7 @@ function library:Window(title, version, info, preset, closebind)
     end)()
 
     task.spawn(function()
-        while _G.altloaded do
+        while altloaded do
             Title.TextColor3 = PresetColor
             line.BackgroundColor3 = PresetColor
             line2.BackgroundColor3 = PresetColor
@@ -328,6 +335,41 @@ function library:Window(title, version, info, preset, closebind)
             end
         end
     end)
+    local altname = "Show"
+    function checkIfMobile()
+        return uis.TouchEnabled and not uis.MouseEnabled
+    end
+    if cg:FindFirstChild(altname) then
+        cg:FindFirstChild(altname):Destroy()
+    end
+    if checkIfMobile() then
+        if not cg:FindFirstChild(altname) then
+            local ScreenGui = Instance.new("ScreenGui")
+            ScreenGui.Name = altname
+            
+            pcall(function()
+                ScreenGui.Parent = cg
+            end)
+            
+            local QuickCapture = Instance.new("TextButton")
+            QuickCapture.Name = "UI"
+            QuickCapture.BackgroundColor3 = Color3.fromRGB(85, 0, 255)
+            QuickCapture.BackgroundTransparency = 0.14
+            QuickCapture.Position = UDim2.new(0.93, 0, 0, 40)
+            QuickCapture.Size = UDim2.new(0, 33, 0, 33)
+            QuickCapture.Font = Enum.Font.SourceSansBold
+            QuickCapture.Text = "O/C"
+            QuickCapture.TextColor3 = Color3.fromRGB(255, 0, 0)
+            QuickCapture.TextSize = 20
+            QuickCapture.TextWrapped = true
+            QuickCapture.Draggable = library.OCbtn
+            QuickCapture.Parent = ScreenGui
+            
+            library.Conn[#library.Conn + 1] = QuickCapture.MouseButton1Click:Connect(function()
+                Main.Visible = not Main.Visible
+            end)
+        end
+    end
 
     TabFolder.Name = "TabFolder"
     TabFolder.Parent = Main
@@ -366,8 +408,7 @@ function library:Window(title, version, info, preset, closebind)
         NotificationFrame.BorderSizePixel = 0
         NotificationFrame.ClipsDescendants = true
         NotificationFrame.Position = UDim2.new(0.5, 0, 0.498432577, 0)
-
-        NotificationFrame:TweenSize(UDim2.new(0, 164, 0, 193),Enum.EasingDirection.Out,Enum.EasingStyle.Quart,.6,true)
+        NotificationFrame.Size = UDim2.new(0, 164, 0, 193)
 
         OkayBtn.Name = "OkayBtn"
         OkayBtn.Parent = NotificationFrame
@@ -424,7 +465,7 @@ function library:Window(title, version, info, preset, closebind)
 
 
         library.Conn[#library.Conn + 1] = OkayBtn.MouseButton1Click:Connect(function()
-            NotificationFrame:TweenSize(UDim2.new(0, 0, 0, 0),Enum.EasingDirection.Out,Enum.EasingStyle.Quart,.6,true)
+            NotificationFrame.Size = UDim2.new(0, 164, 0, 193)
             wait(.4)
             NotificationHold:Destroy()
         end)
@@ -468,7 +509,7 @@ function library:Window(title, version, info, preset, closebind)
         TabBtnIndicatorCorner.Parent = TabBtnIndicator
 
         coroutine.wrap(function()
-            while _G.altloaded do
+            while altloaded do
                 TabBtnIndicator.BackgroundColor3 = PresetColor
 				task.wait()
             end
@@ -510,8 +551,8 @@ function library:Window(title, version, info, preset, closebind)
             end
             for i, v in next, TabHold:GetChildren() do
                 if v.Name == "TabBtn" then
-                    v.TabBtnIndicator:TweenSize(UDim2.new(0, 0, 0, 2),Enum.EasingDirection.Out,Enum.EasingStyle.Quart,.2,true)
-                    TabBtnIndicator:TweenSize(UDim2.new(0, 13, 0, 2),Enum.EasingDirection.Out,Enum.EasingStyle.Quart,.2,true)
+                    v.TabBtnIndicator.Size = UDim2.new(0, 0, 0, 2)
+                    TabBtnIndicator.Size = UDim2.new(0, 13, 0, 2)
                 end
             end
         end)
@@ -636,7 +677,7 @@ function library:Window(title, version, info, preset, closebind)
             FrameToggleCircleCorner.Parent = FrameToggleCircle
         
             coroutine.wrap(function()
-                while _G.altloaded do
+                while altloaded do
                     FrameToggle3.BackgroundColor3 = PresetColor
                     task.wait()
                 end
@@ -649,14 +690,14 @@ function library:Window(title, version, info, preset, closebind)
                     tweensv:Create(FrameToggle2, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 1}):Play()
                     tweensv:Create(FrameToggle3, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 0}):Play()
                     tweensv:Create(FrameToggleCircle, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(255, 255, 255)}):Play()
-                    FrameToggleCircle:TweenPosition(UDim2.new(0.587, 0, 0.222000003, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .2, true)
+                    FrameToggleCircle.Position = UDim2.new(0.587, 0, 0.222000003, 0)
                 else
                     tweensv:Create(Toggle, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(34, 34, 34)}):Play()
                     tweensv:Create(FrameToggle1, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 0}):Play()
                     tweensv:Create(FrameToggle2, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 0}):Play()
                     tweensv:Create(FrameToggle3, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 1}):Play()
                     tweensv:Create(FrameToggleCircle, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(50, 50, 50)}):Play()
-                    FrameToggleCircle:TweenPosition(UDim2.new(0.127000004, 0, 0.222000003, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .2, true)
+                    FrameToggleCircle.Position = UDim2.new(0.127000004, 0, 0.222000003, 0)
                 end
                 toggled = state
                 local suc, res = pcall(callback, toggled)
@@ -760,7 +801,7 @@ function library:Window(title, version, info, preset, closebind)
             FrameToggleCircleCorner.Parent = FrameToggleCircle
 
             coroutine.wrap(function()
-                while _G.altloaded do
+                while altloaded do
                     FrameToggle3.BackgroundColor3 = PresetColor
                     task.wait()
                 end
@@ -769,10 +810,10 @@ function library:Window(title, version, info, preset, closebind)
             local function ToggleState(state)
                 toggled = state
                 if toggled then
-                    FrameToggleCircle:TweenPosition(UDim2.new(0.6, 0, 0.2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
+                    FrameToggleCircle.Position = UDim2.new(0.6, 0, 0.2, 0)
                     FrameToggle3.BackgroundTransparency = 0
                 else
-                    FrameToggleCircle:TweenPosition(UDim2.new(0.1, 0, 0.2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
+                    FrameToggleCircle.Position = UDim2.new(0.1, 0, 0.2, 0)
                     FrameToggle3.BackgroundTransparency = 1
                 end
                 pcall(callback, toggled)
@@ -937,7 +978,7 @@ function library:Window(title, version, info, preset, closebind)
             ProgressCorner.Parent = Progress
 
             task.spawn(function()
-                while _G.altloaded do
+                while altloaded do
                     Circle.BackgroundColor3 = PresetColor
                     Progress.BackgroundColor3 = PresetColor
                     task.wait()
@@ -1094,7 +1135,7 @@ function library:Window(title, version, info, preset, closebind)
             library.Conn[#library.Conn + 1] = CloseButton.MouseButton1Click:Connect(function()
                 tweensv:Create(ImageLabel,TweenInfo.new(0.3),{Rotation = 90}):Play()
                 tweensv:Create(FadeBackgroundFrame,TweenInfo.new(0.3),{BackgroundTransparency = 1}):Play()
-                Tsd:TweenPosition(UDim2.new(0.5,0,5,0),"Out","Quart",0.3)
+                Tsd.Position = UDim2.new(0.5,0,5,0)
             end)
 
             DropdownListCorner.Name = "DropdownListCorner"
@@ -1169,7 +1210,7 @@ function library:Window(title, version, info, preset, closebind)
             library.Conn[#library.Conn + 1] = DropdownBox.MouseButton1Click:Connect(function()
                 tweensv:Create(ImageLabel,TweenInfo.new(0.3),{Rotation = 180}):Play()
                 tweensv:Create(FadeBackgroundFrame,TweenInfo.new(0.3),{BackgroundTransparency = 0.3}):Play()
-                Tsd:TweenPosition(UDim2.new(0.5,0,0.5,0),"Out","Quart",0.3)
+                Tsd.Position = UDim2.new(0.5,0,0.5,0)
             end)
 
             local Drop = {}
@@ -1558,41 +1599,28 @@ function library:Window(title, version, info, preset, closebind)
             HueSelection.Visible = false
 
             coroutine.wrap(function()
-                while _G.altloaded do
+                while altloaded do
                     FrameRainbowToggle3.BackgroundColor3 = PresetColor
 					task.wait()
                 end
             end)()
-            library.Conn[#library.Conn + 1] = ColorpickerBtn.MouseButton1Click:Connect(
-                function()
-                    if ColorPickerToggled == false then
-                        ColorSelection.Visible = true
-                        HueSelection.Visible = true
-                        Colorpicker:TweenSize(
-                            UDim2.new(0, 363, 0, 132),
-                            Enum.EasingDirection.Out,
-                            Enum.EasingStyle.Quart,
-                            .2,
-                            true
-                        )
-                        wait(.2)
-                        Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
-                    else
-                        ColorSelection.Visible = false
-                        HueSelection.Visible = false
-                        Colorpicker:TweenSize(
-                            UDim2.new(0, 363, 0, 42),
-                            Enum.EasingDirection.Out,
-                            Enum.EasingStyle.Quart,
-                            .2,
-                            true
-                        )
-                        wait(.2)
-                        Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
-                    end
-                    ColorPickerToggled = not ColorPickerToggled
+
+            library.Conn[#library.Conn + 1] = ColorpickerBtn.MouseButton1Click:Connect(function()
+                if ColorPickerToggled == false then
+                    ColorSelection.Visible = true
+                    HueSelection.Visible = true
+                    Colorpicker.Size = UDim2.new(0, 363, 0, 132)
+                    wait(.2)
+                    Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
+                else
+                    ColorSelection.Visible = false
+                    HueSelection.Visible = false
+                    Colorpicker.Size = UDim2.new(0, 363, 0, 42)
+                    wait(.2)
+                    Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
                 end
-            )
+                ColorPickerToggled = not ColorPickerToggled
+            end)
 
             local function UpdateColorPicker(nope)
                 BoxColor.BackgroundColor3 = Color3.fromHSV(ColorH, ColorS, ColorV)
@@ -1617,197 +1645,129 @@ function library:Window(title, version, info, preset, closebind)
             Color.BackgroundColor3 = preset
             pcall(callback, BoxColor.BackgroundColor3)
 
-            library.Conn[#library.Conn + 1] = Color.InputBegan:Connect(
-                function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                        if RainbowColorPicker then
-                            return
-                        end
-
-                        if ColorInput then
-                            ColorInput:Disconnect()
-                        end
-
-                        ColorInput =
-                            rs.RenderStepped:Connect(
-                            function()
-                                local ColorX =
-                                    (math.clamp(ms.X - Color.AbsolutePosition.X, 0, Color.AbsoluteSize.X) /
-                                    Color.AbsoluteSize.X)
-                                local ColorY =
-                                    (math.clamp(ms.Y - Color.AbsolutePosition.Y, 0, Color.AbsoluteSize.Y) /
-                                    Color.AbsoluteSize.Y)
-
-                                ColorSelection.Position = UDim2.new(ColorX, 0, ColorY, 0)
-                                ColorS = ColorX
-                                ColorV = 1 - ColorY
-
-                                UpdateColorPicker(true)
-                            end
-                        )
+            library.Conn[#library.Conn + 1] = Color.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                    if RainbowColorPicker then
+                        return
                     end
-                end
-            )
-
-            library.Conn[#library.Conn + 1] = Color.InputEnded:Connect(
-                function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                        if ColorInput then
-                            ColorInput:Disconnect()
-                        end
-                    end
-                end
-            )
-
-            library.Conn[#library.Conn + 1] = Hue.InputBegan:Connect(
-                function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                        if RainbowColorPicker then
-                            return
-                        end
-
-                        if HueInput then
-                            HueInput:Disconnect()
-                        end
-
-                        HueInput =
-                            rs.RenderStepped:Connect(
-                            function()
-                                local HueY =
-                                    (math.clamp(ms.Y - Hue.AbsolutePosition.Y, 0, Hue.AbsoluteSize.Y) /
-                                    Hue.AbsoluteSize.Y)
-
-                                HueSelection.Position = UDim2.new(0.48, 0, HueY, 0)
-                                ColorH = 1 - HueY
-
-                                UpdateColorPicker(true)
-                            end
-                        )
-                    end
-                end
-            )
-
-            library.Conn[#library.Conn + 1] = Hue.InputEnded:Connect(
-                function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                        if HueInput then
-                            HueInput:Disconnect()
-                        end
-                    end
-                end
-            )
-
-            RainbowToggle.MouseButton1Down:Connect(
-                function()
-                    RainbowColorPicker = not RainbowColorPicker
 
                     if ColorInput then
                         ColorInput:Disconnect()
+                    end
+
+                    ColorInput = rs.RenderStepped:Connect(function()
+                        local ColorX =
+                            (math.clamp(ms.X - Color.AbsolutePosition.X, 0, Color.AbsoluteSize.X) /
+                            Color.AbsoluteSize.X)
+                        local ColorY =
+                            (math.clamp(ms.Y - Color.AbsolutePosition.Y, 0, Color.AbsoluteSize.Y) /
+                            Color.AbsoluteSize.Y)
+
+                        ColorSelection.Position = UDim2.new(ColorX, 0, ColorY, 0)
+                        ColorS = ColorX
+                        ColorV = 1 - ColorY
+
+                        UpdateColorPicker(true)
+                    end)
+                end
+            end)
+
+            library.Conn[#library.Conn + 1] = Color.InputEnded:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                    if ColorInput then
+                        ColorInput:Disconnect()
+                    end
+                end
+            end)
+
+            library.Conn[#library.Conn + 1] = Hue.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                    if RainbowColorPicker then
+                        return
                     end
 
                     if HueInput then
                         HueInput:Disconnect()
                     end
 
-                    if RainbowColorPicker then
-                        tweensv:Create(
-                            FrameRainbowToggle1,
-                            TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                            {BackgroundTransparency = 1}
-                        ):Play()
-                        tweensv:Create(
-                            FrameRainbowToggle2,
-                            TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                            {BackgroundTransparency = 1}
-                        ):Play()
-                        tweensv:Create(
-                            FrameRainbowToggle3,
-                            TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                            {BackgroundTransparency = 0}
-                        ):Play()
-                        tweensv:Create(
-                            FrameRainbowToggleCircle,
-                            TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                            {BackgroundColor3 = Color3.fromRGB(255, 255, 255)}
-                        ):Play()
-                        FrameRainbowToggleCircle:TweenPosition(
-                            UDim2.new(0.587, 0, 0.222000003, 0),
-                            Enum.EasingDirection.Out,
-                            Enum.EasingStyle.Quart,
-                            .2,
-                            true
-                        )
+                    HueInput = rs.RenderStepped:Connect(function()
+                        local HueY =
+                            (math.clamp(ms.Y - Hue.AbsolutePosition.Y, 0, Hue.AbsoluteSize.Y) /
+                            Hue.AbsoluteSize.Y)
 
-                        OldToggleColor = BoxColor.BackgroundColor3
-                        OldColor = Color.BackgroundColor3
-                        OldColorSelectionPosition = ColorSelection.Position
-                        OldHueSelectionPosition = HueSelection.Position
+                        HueSelection.Position = UDim2.new(0.48, 0, HueY, 0)
+                        ColorH = 1 - HueY
 
-                        while RainbowColorPicker do
-                            BoxColor.BackgroundColor3 = Color3.fromHSV(library.RainbowColorValue, 1, 1)
-                            Color.BackgroundColor3 = Color3.fromHSV(library.RainbowColorValue, 1, 1)
+                        UpdateColorPicker(true)
+                    end)
+                end
+            end)
 
-                            ColorSelection.Position = UDim2.new(1, 0, 0, 0)
-                            HueSelection.Position = UDim2.new(0.48, 0, 0, library.HueSelectionPosition)
-
-                            pcall(callback, BoxColor.BackgroundColor3)
-							task.wait()
-                        end
-                    elseif not RainbowColorPicker then
-                        tweensv:Create(
-                            FrameRainbowToggle1,
-                            TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                            {BackgroundTransparency = 0}
-                        ):Play()
-                        tweensv:Create(
-                            FrameRainbowToggle2,
-                            TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                            {BackgroundTransparency = 0}
-                        ):Play()
-                        tweensv:Create(
-                            FrameRainbowToggle3,
-                            TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                            {BackgroundTransparency = 1}
-                        ):Play()
-                        tweensv:Create(
-                            FrameRainbowToggleCircle,
-                            TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                            {BackgroundColor3 = Color3.fromRGB(50, 50, 50)}
-                        ):Play()
-                        FrameRainbowToggleCircle:TweenPosition(
-                            UDim2.new(0.127000004, 0, 0.222000003, 0),
-                            Enum.EasingDirection.Out,
-                            Enum.EasingStyle.Quart,
-                            .2,
-                            true
-                        )
-
-                        BoxColor.BackgroundColor3 = OldToggleColor
-                        Color.BackgroundColor3 = OldColor
-
-                        ColorSelection.Position = OldColorSelectionPosition
-                        HueSelection.Position = OldHueSelectionPosition
-
-                        pcall(callback, BoxColor.BackgroundColor3)
+            library.Conn[#library.Conn + 1] = Hue.InputEnded:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                    if HueInput then
+                        HueInput:Disconnect()
                     end
                 end
-            )
+            end)
 
-            library.Conn[#library.Conn + 1] = ConfirmBtn.MouseButton1Click:Connect(
-                function()
-                    ColorSelection.Visible = false
-                    HueSelection.Visible = false
-                    Colorpicker:TweenSize(
-                        UDim2.new(0, 363, 0, 42),
-                        Enum.EasingDirection.Out,
-                        Enum.EasingStyle.Quart,
-                        .2,
-                        true
-                    )
-                    wait(.2)
-                    Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
+            RainbowToggle.MouseButton1Down:Connect(function()
+                RainbowColorPicker = not RainbowColorPicker
+
+                if ColorInput then
+                    ColorInput:Disconnect()
                 end
-            )
+
+                if HueInput then
+                    HueInput:Disconnect()
+                end
+
+                if RainbowColorPicker then
+                    tweensv:Create(FrameRainbowToggle1,TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{BackgroundTransparency = 1}):Play()
+                    tweensv:Create(FrameRainbowToggle2,TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{BackgroundTransparency = 1}):Play()
+                    tweensv:Create(FrameRainbowToggle3,TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{BackgroundTransparency = 0}):Play()
+                    tweensv:Create(FrameRainbowToggleCircle,TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{BackgroundColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+                    FrameRainbowToggleCircle.Position = UDim2.new(0.587, 0, 0.222000003, 0)
+                    OldToggleColor = BoxColor.BackgroundColor3
+                    OldColor = Color.BackgroundColor3
+                    OldColorSelectionPosition = ColorSelection.Position
+                    OldHueSelectionPosition = HueSelection.Position
+
+                    while RainbowColorPicker do
+                        BoxColor.BackgroundColor3 = Color3.fromHSV(library.RainbowColorValue, 1, 1)
+                        Color.BackgroundColor3 = Color3.fromHSV(library.RainbowColorValue, 1, 1)
+
+                        ColorSelection.Position = UDim2.new(1, 0, 0, 0)
+                        HueSelection.Position = UDim2.new(0.48, 0, 0, library.HueSelectionPosition)
+
+                        pcall(callback, BoxColor.BackgroundColor3)
+                        task.wait()
+                    end
+                elseif not RainbowColorPicker then
+                    tweensv:Create(FrameRainbowToggle1,TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{BackgroundTransparency = 0}):Play()
+                    tweensv:Create(FrameRainbowToggle2,TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{BackgroundTransparency = 0}):Play()
+                    tweensv:Create(FrameRainbowToggle3,TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{BackgroundTransparency = 1}):Play()
+                    tweensv:Create(FrameRainbowToggleCircle,TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{BackgroundColor3 = Color3.fromRGB(50, 50, 50)}):Play()
+                    FrameRainbowToggleCircle.Position = UDim2.new(0.127000004, 0, 0.222000003, 0)
+
+                    BoxColor.BackgroundColor3 = OldToggleColor
+                    Color.BackgroundColor3 = OldColor
+
+                    ColorSelection.Position = OldColorSelectionPosition
+                    HueSelection.Position = OldHueSelectionPosition
+
+                    pcall(callback, BoxColor.BackgroundColor3)
+                end
+            end)
+
+            library.Conn[#library.Conn + 1] = ConfirmBtn.MouseButton1Click:Connect(function()
+                ColorSelection.Visible = false
+                HueSelection.Visible = false
+                Colorpicker.Size = UDim2.new(0, 363, 0, 42)
+                wait(.2)
+                Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
+            end)
+
             Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
         end
         function tabcontent:Label(text)
