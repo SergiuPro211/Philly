@@ -8,7 +8,6 @@ local library = {
     debug = false,
     OCbtn = false
 }
-warn("wiev")
 local uis = cloneref( game:GetService("UserInputService"))
 local tweensv = cloneref(game:GetService("TweenService"))
 local rs = cloneref(game:GetService("RunService"))
@@ -322,42 +321,6 @@ function library:Window(title, version, info, preset, closebind)
             end
         end
     end)
-
-    local function createDeviceButton()
-        local id = tostring(math.random(1000,9999))
-        
-        local function checkViewport()
-            local viewportSize = workspace.CurrentCamera.ViewportSize
-            -- Most mobile devices have height > width
-            return viewportSize.Y > viewportSize.X * 1.2
-        end
-        
-        task.spawn(function()
-            task.wait(math.random(2,5)/10)
-            
-            if checkViewport() then
-                local gui = Instance.new("ScreenGui")
-                gui.Name = string.char(math.random(65,90))..id
-                
-                local btn = Instance.new("TextButton")
-                btn.Name = string.char(math.random(65,90))..id
-                btn.Position = UDim2.new(0.93, 0, 0, 40)
-                btn.Size = UDim2.new(0, 33, 0, 33)
-                btn.BackgroundTransparency = 0.14
-                btn.Text = "."
-                btn.Parent = gui
-                
-                pcall(function()
-                    gui.Parent = cg
-                    btn.MouseButton1Click:Connect(function()
-                        if Main then Main.Visible = not Main.Visible end
-                    end)
-                end)
-            end
-        end)
-    end
-    
-    createDeviceButton()
 
     TabFolder.Name = "TabFolder"
     TabFolder.Parent = Main
