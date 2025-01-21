@@ -9,7 +9,7 @@ local library = {
     debug = false,
     OCbtn = false
 }
-print("ssa")
+
 local uis = cloneref( game:GetService("UserInputService"))
 local tweensv = cloneref(game:GetService("TweenService"))
 local rs = cloneref(game:GetService("RunService"))
@@ -23,7 +23,7 @@ local httpsv = cloneref(game:GetService("HttpService"))
 local PresetColor, Drawing, placeid = Color3.fromRGB(255, 0, 0), Drawing or {}, game.PlaceId
 local CloseBind, syn, getgenv = Enum.KeyCode.X, syn or {}, getgenv or {}
 
-local rbxgui = game:GetService("Players").LocalPlayer.PlayerGui
+local rbxgui = plrs.LocalPlayer:WaitForChild("PlayerGui")
 
 if _G.altloaded  then
     for i,v in next, rbxgui:GetChildren() do
@@ -42,7 +42,25 @@ _G.altloaded = true
 local screengui = Instance.new("ScreenGui", rbxgui)
 screengui.Name = "Horizon"
 screengui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+if type(syn) == "function" then
+	syn.protect_gui(screengui)
+end
 
+task.spawn(function()
+	while _G.altloaded do
+		library.RainbowColorValue = library.RainbowColorValue + 1 / 255
+		library.HueSelectionPosition = library.HueSelectionPosition + 1
+
+		if library.RainbowColorValue >= 1 then
+			library.RainbowColorValue = 0
+		end
+
+		if library.HueSelectionPosition == 80 then
+			library.HueSelectionPosition = 0
+		end
+		task.wait()
+	end
+end)
 
 local function animateText(display, text, repeatCount, delay)
     if not display then return end
@@ -77,6 +95,51 @@ function library:Unload()
 		v:Disconnect()
 	end
     _G.altloaded = false
+end
+
+local function MakeDraggable(topbarobject, object)
+    local Dragging = nil
+    local DragInput = nil
+    local DragStart = nil
+    local StartPosition = nil
+
+    local function Update(input)
+        local Delta = input.Position - DragStart
+        local pos =
+            UDim2.new(
+            StartPosition.X.Scale,
+            StartPosition.X.Offset + Delta.X,
+            StartPosition.Y.Scale,
+            StartPosition.Y.Offset + Delta.Y
+        )
+        object.Position = pos
+    end
+
+    library.Conn[#library.Conn + 1] = topbarobject.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            Dragging = true
+            DragStart = input.Position
+            StartPosition = object.Position
+
+            library.Conn[#library.Conn + 1] = input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    Dragging = false
+                end
+            end)
+        end
+    end)
+
+    library.Conn[#library.Conn + 1] = topbarobject.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            DragInput = input
+        end
+    end)
+
+    library.Conn[#library.Conn + 1] = uis.InputChanged:Connect(function(input)
+        if input == DragInput and Dragging then
+            Update(input)
+        end
+    end)
 end
 
 function library:ChangeBind(key)
