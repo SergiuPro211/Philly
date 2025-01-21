@@ -21,26 +21,28 @@ local httpsv = cloneref(game:GetService("HttpService"))
 local PresetColor, Drawing, placeid = Color3.fromRGB(255, 0, 0), Drawing or {}, game.PlaceId
 local CloseBind, getgenv = Enum.KeyCode.X, getgenv or {}
 local rbxgui = cg
-if altloaded  then
-    for i,v in next, rbxgui:GetChildren() do
+getgenv().altloaded = getgenv().altloaded or false
+
+if getgenv().altloaded then
+    for i, v in next, cg:GetChildren() do
         if v.Name == "-.-- .- .-.. .-.. / .- .-. . / ... -.- .. -.. ..." then
             v:Destroy()
         end
     end
-	for i,v in next, library.Conn do
-		v:Disconnect()
-	end
-	altloaded = false
+    for i, v in next, library.Conn do
+        v:Disconnect()
+    end
+    getgenv().altloaded = false
 end
 
-altloaded = true
+getgenv().altloaded = true
 
 local screengui = Instance.new("ScreenGui")
 screengui.Name = "-.-- .- .-.. .-.. / .- .-. . / ... -.- .. -.. ..."
 screengui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 screengui.Parent = rbxgui
 task.spawn(function()
-	while altloaded do
+	while getgenv().altloaded do
 		library.RainbowColorValue = library.RainbowColorValue + 1 / 255
 		library.HueSelectionPosition = library.HueSelectionPosition + 1
 
@@ -87,7 +89,7 @@ function library:Unload()
     for i,v in next, library.Conn do
 		v:Disconnect()
 	end
-    altloaded = false
+    getgenv().altloaded = false
 end
 
 function MakeDraggable(topbarobject, object)
@@ -276,7 +278,7 @@ function library:Window(title, version, info, preset, closebind)
     }
 
     coroutine.wrap(function()
-        while altloaded do
+        while getgenv().altloaded do
             local repeatCount = 10
             local delay = 0.05
             for _, v in ipairs(textDisplays) do
@@ -291,7 +293,7 @@ function library:Window(title, version, info, preset, closebind)
     end)()
 
     task.spawn(function()
-        while altloaded do
+        while getgenv().altloaded do
             Title.TextColor3 = PresetColor
             line.BackgroundColor3 = PresetColor
             line2.BackgroundColor3 = PresetColor
@@ -502,7 +504,7 @@ function library:Window(title, version, info, preset, closebind)
         TabBtnIndicatorCorner.Parent = TabBtnIndicator
 
         coroutine.wrap(function()
-            while altloaded do
+            while getgenv().altloaded do
                 TabBtnIndicator.BackgroundColor3 = PresetColor
 				task.wait()
             end
@@ -670,7 +672,7 @@ function library:Window(title, version, info, preset, closebind)
             FrameToggleCircleCorner.Parent = FrameToggleCircle
         
             coroutine.wrap(function()
-                while altloaded do
+                while getgenv().altloaded do
                     FrameToggle3.BackgroundColor3 = PresetColor
                     task.wait()
                 end
@@ -794,7 +796,7 @@ function library:Window(title, version, info, preset, closebind)
             FrameToggleCircleCorner.Parent = FrameToggleCircle
 
             coroutine.wrap(function()
-                while altloaded do
+                while getgenv().altloaded do
                     FrameToggle3.BackgroundColor3 = PresetColor
                     task.wait()
                 end
@@ -971,7 +973,7 @@ function library:Window(title, version, info, preset, closebind)
             ProgressCorner.Parent = Progress
 
             task.spawn(function()
-                while altloaded do
+                while getgenv().altloaded do
                     Circle.BackgroundColor3 = PresetColor
                     Progress.BackgroundColor3 = PresetColor
                     task.wait()
@@ -1592,7 +1594,7 @@ function library:Window(title, version, info, preset, closebind)
             HueSelection.Visible = false
 
             coroutine.wrap(function()
-                while altloaded do
+                while getgenv().altloaded do
                     FrameRainbowToggle3.BackgroundColor3 = PresetColor
 					task.wait()
                 end
