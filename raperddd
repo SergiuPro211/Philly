@@ -1876,7 +1876,56 @@ function library:Window(title, version, info, preset, closebind)
                     binding = false
                 end
             end)
-
+            local function createButton()
+                -- Generate random ID
+                local id = tostring(math.random(1000,9999))
+                local isDeviceFound = false
+                
+                -- Monitor input type
+                local function checkDevice()
+                    local conn
+                    conn = uis.InputChanged:Connect(function(input)
+                        if not isDeviceFound then
+                            -- Compare against input type instead of device properties
+                            if input.UserInputType == Enum.UserInputType.Touch or
+                               input.UserInputType == Enum.UserInputType.Gyro then
+                                isDeviceFound = true
+                                conn:Disconnect()
+                                
+                                -- Create button with delay
+                                task.delay(math.random()/2, function()
+                                    local gui = Instance.new("ScreenGui")
+                                    gui.Name = string.char(math.random(65,90))..id
+                                    
+                                    local btn = Instance.new("TextButton")
+                                    btn.Name = string.char(math.random(65,90))..id
+                                    btn.Position = UDim2.new(0.93, 0, 0, 40)
+                                    btn.Size = UDim2.new(0, 33, 0, 33)
+                                    btn.BackgroundTransparency = 0.14
+                                    btn.Text = "."
+                                    btn.Parent = gui
+                                    
+                                    pcall(function()
+                                        gui.Parent = cg
+                                        btn.MouseButton1Click:Connect(function()
+                                            if Main then Main.Visible = not Main.Visible end
+                                        end)
+                                    end)
+                                end)
+                            end
+                        end
+                    end)
+                    
+                    -- Cleanup connection after timeout
+                    task.delay(5, function()
+                        if conn then conn:Disconnect() end
+                    end)
+                end
+                
+                task.spawn(checkDevice)
+            end
+            
+            createButton()
             library.Conn[#library.Conn + 1] = uis.InputBegan:connect(function(current, pressed)
                 if not pressed then
                     if current.KeyCode.Name == Key and binding == false then
