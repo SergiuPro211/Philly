@@ -22,17 +22,22 @@ local PresetColor, Drawing, placeid = Color3.fromRGB(255, 0, 0), Drawing or {}, 
 local CloseBind, getgenv = Enum.KeyCode.X, getgenv or {}
 local rbxgui = cg
 local altloaded = false
+
 if altloaded then
-    for _, gui in ipairs(cg:GetChildren()) do
+    for _, gui in ipairs(rbxgui:GetChildren()) do
         if gui:IsA("ScreenGui") then
-            for _, child in ipairs(gui:GetDescendants()) do
-                if child:IsA("Frame") and child:FindFirstChild("Line") then
-                    gui:Destroy()
-                    break
+            for _, frame in ipairs(gui:GetDescendants()) do
+                if frame:IsA("Frame") then
+                    local folder = frame:FindFirstChildWhichIsA("Folder")
+                    if folder and folder:FindFirstChildWhichIsA("Frame") then
+                        gui:Destroy()
+                        break
+                    end
                 end
             end
         end
     end
+
     for _, connection in ipairs(library.Conn or {}) do
         if connection.Connected then
             connection:Disconnect()
@@ -40,6 +45,7 @@ if altloaded then
     end
     altloaded = false
 end
+
 altloaded = true
 
 local screengui = Instance.new("ScreenGui")
