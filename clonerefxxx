@@ -322,12 +322,8 @@ function library:Window(title, version, info, preset, closebind)
         end
     end)
 
-    TabFolder.Name = "TabFolder"
-    TabFolder.Parent = Main
+    local uis = game:GetService("UserInputService")
 
-    function library:ChangePresetColor(toch)
-        PresetColor = toch
-    end
     function getDeviceType()
         if uis.TouchEnabled and not uis.KeyboardEnabled then
             return "Mobile"
@@ -339,27 +335,40 @@ function library:Window(title, version, info, preset, closebind)
     end
     
     if getDeviceType() == "Mobile" then
-            local QuickCapture = Instance.new("TextButton", rbxgui:FindFirstChild("Bombardier"))
-            QuickCapture.Name = "UI"
-            QuickCapture.BackgroundColor3 = Color3.fromRGB(85, 0, 255)
-            QuickCapture.BackgroundTransparency = 0.14
-            QuickCapture.Position = UDim2.new(0.93, 0, 0, 40)
-            QuickCapture.Size = UDim2.new(0, 33, 0, 33)
-            QuickCapture.Font = Enum.Font.SourceSansBold
-            QuickCapture.Text = "O/C"
-            QuickCapture.TextColor3 = Color3.fromRGB(255, 0, 0)
-            QuickCapture.TextSize = 20.000
-            QuickCapture.TextWrapped = true
-            QuickCapture.Draggable = library.OCbtn
-            
-            library.Conn[#library.Conn + 1] = QuickCapture.MouseButton1Click:Connect(function()
-                if Main.Visible == false then
-                    Main.Visible = true
-                else
-                    Main.Visible = false
-                end
-            end)
+        local rbxgui = game:GetService("CoreGui"):FindFirstChild("Bombardier") -- Ensure 'Bombardier' exists
+        if not rbxgui then
+            warn("Bombardier GUI not found!")
+            return
         end
+    
+        local QuickCapture = Instance.new("TextButton", rbxgui)
+        QuickCapture.Name = "UI"
+        QuickCapture.BackgroundColor3 = Color3.fromRGB(85, 0, 255)
+        QuickCapture.BackgroundTransparency = 0.14
+        QuickCapture.Position = UDim2.new(0.93, 0, 0, 40)
+        QuickCapture.Size = UDim2.new(0, 33, 0, 33)
+        QuickCapture.Font = Enum.Font.SourceSansBold
+        QuickCapture.Text = "O/C"
+        QuickCapture.TextColor3 = Color3.fromRGB(255, 0, 0)
+        QuickCapture.TextSize = 20.000
+        QuickCapture.TextWrapped = true
+        QuickCapture.Draggable = library and library.OCbtn or false -- Ensure library.OCbtn exists
+    
+        library.Conn = library.Conn or {}
+        table.insert(library.Conn, QuickCapture.MouseButton1Click:Connect(function()
+            if Main and Main.Visible ~= nil then
+                Main.Visible = not Main.Visible
+            else
+                warn("Main is not defined or missing!")
+            end
+        end))
+    end    
+
+    TabFolder.Name = "TabFolder"
+    TabFolder.Parent = Main
+
+    function library:ChangePresetColor(toch)
+        PresetColor = toch
     end
 
     function library:Notification(texttitle, textdesc, textbtn)
