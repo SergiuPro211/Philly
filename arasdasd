@@ -322,8 +322,6 @@ function library:Window(title, version, info, preset, closebind)
         end
     end)
 
-    local uis = game:GetService("UserInputService")
-
     function getDeviceType()
         if uis.TouchEnabled and not uis.KeyboardEnabled then
             return "Mobile"
@@ -333,14 +331,12 @@ function library:Window(title, version, info, preset, closebind)
             return "Unknown"
         end
     end
-    
-    if getDeviceType() == "Mobile" then
-        local rbxgui = game:GetService("CoreGui"):FindFirstChild("Bombardier")
-        if not rbxgui then
+    if getDeviceType() == "PC" then
+        local rbxguix = game:GetService("CoreGui"):FindFirstChild("Bombardier")
+        if not rbxguix then
             warn("Bombardier GUI not found!")
             return
         end
-    
         local QuickCapture = Instance.new("TextButton")
         QuickCapture.Name = "UI"
         QuickCapture.BackgroundColor3 = Color3.fromRGB(85, 0, 255)
@@ -353,7 +349,7 @@ function library:Window(title, version, info, preset, closebind)
         QuickCapture.TextSize = 20.000
         QuickCapture.TextWrapped = true
         QuickCapture.Draggable = library and library.OCbtn or false
-        QuickCapture.Parent = rbxgui
+        QuickCapture.Parent = rbxguix
     
         library.Conn = library.Conn or {}
         table.insert(library.Conn, QuickCapture.MouseButton1Click:Connect(function()
@@ -364,7 +360,6 @@ function library:Window(title, version, info, preset, closebind)
             end
         end))
     end
-    
 
     TabFolder.Name = "TabFolder"
     TabFolder.Parent = Main
